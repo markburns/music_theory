@@ -34,7 +34,7 @@ class Key
 
         note_names.each do |name|
           yield octave, name, cents, midi_number
-        end
+        end if range.include? midi_number
       end
     end
   end
@@ -60,8 +60,6 @@ class Key
 
     ArgumentError.new unless scale_ok and key_ok and tuning_ok
   end
-
-
 
   def octaves
     (0..11).to_a

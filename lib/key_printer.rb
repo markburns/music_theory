@@ -1,6 +1,7 @@
 class KeyPrinter
-  attr_reader :key
+  attr_accessor :key
   delegate :range, to: :key
+  delegate :standard_frequency, to: self
 
   def initialize key
     @key = key
@@ -11,13 +12,21 @@ class KeyPrinter
     "| #{output} |\n"
   end
 
+  def self.standard_tuning
+    @standard_tuning ||= Key.new
+  end
+
+  def self.standard_frequency midi
+    standard_tuning.note(midi).frequency.round 2
+  end
+
   def print range
-    output = format ["MIDI", "NOTE", "cent offset"]
+    output = format ["MIDI", "NOTE", "standard tuning", "cent offset", "frequency"]
 
     range.to_a.each do |midi|
       note = key.note midi
       if note
-        columns = [ midi, note.note, note.cents]
+        columns = [ midi, note.note, standard_frequency(midi), note.cents, note.frequency.round(2)]
         output << format(columns)
       end
     end
