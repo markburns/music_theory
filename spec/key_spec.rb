@@ -6,13 +6,18 @@ describe Key do
 
   specify do
     notes = key.notes_by_name
-    notes["A4"]  .midi_number.should == 69
-    notes["A0"]  .midi_number.should == 21
-    notes["C0"]  .midi_number.should == 12
-    notes["Bb0"] .midi_number.should == 22
-    notes["A#0"] .midi_number.should == 22
-    notes["B0"]  .midi_number.should == 23
-    notes["C1"]  .midi_number.should == 24
+    {
+      "A4"  => 69,
+      "A0"  => 21,
+      "C0"  => 12,
+      "Bb0" => 22,
+      "A#0" => 22,
+      "B0"  => 23,
+      "C1"  => 24
+    }.each do |n, midi|
+      notes[n].midi_number.should == midi
+    end
+
   end
 
   specify do
