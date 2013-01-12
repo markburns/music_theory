@@ -11,7 +11,7 @@ class KeyPrinter
     "| #{output} |\n"
   end
 
-  def print_range range
+  def print range
     output = format ["MIDI", "NOTE", "cent offset"]
 
     range.to_a.each do |midi|
