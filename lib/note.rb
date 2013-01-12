@@ -26,6 +26,10 @@ class Note
     @cents       = options[:cents] || 0.0
   end
 
+  def harmonics
+    10.times.map{|c| Note.from( frequency * (c+1)) }
+  end
+
   def frequency
     m = midi_number + (cents/100.0)
     FREQUENCY_OF_MIDDLE_A * 2 **((m-MIDDLE_A_MIDI)/NOTES_PER_OCTAVE)

@@ -1,5 +1,6 @@
 require File.expand_path('spec/spec_helper')
 require './lib/note'
+require 'active_support/core_ext/numeric'
 
 describe 'Note' do
   context "with different midi number" do
@@ -56,4 +57,13 @@ describe 'Note' do
     end
   end
 
+  describe "#harmonics" do
+    let(:middle_a) { Note.new midi_number: 69 }
+
+    (1..9).to_a.each do |h|
+      specify "has the #{h}th harmonic" do
+        middle_a.harmonics[h].should == Note.from(440 * (h+1))
+      end
+    end
+  end
 end
