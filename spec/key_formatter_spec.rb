@@ -1,7 +1,7 @@
 require File.expand_path('spec/spec_helper')
 
 describe KeyPrinter do
-  let(:key) { Key.new "C", SevenNoteScale, JustIntonation }
+  let(:key) { Key.new scale: SevenNoteScale, tuning: JustIntonation }
   let(:key_formatter) { KeyPrinter.new key }
 
   def check range, output
