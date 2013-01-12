@@ -33,7 +33,5 @@ module Scale
 
     note = @output[tuning_offset] ||= {}
     note[:cents] = cents
-
-    @output = @output.delete_if{|_, n| n[:notes].nil? }
   end
 end

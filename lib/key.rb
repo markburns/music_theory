@@ -17,6 +17,27 @@ class Key
     calculate_notes
   end
 
+  ARBITRARILY_HIGH_DIFF = 400_000
+
+  def nearest_note frequency
+    target = Note.from frequency
+    nearest       =    nil
+    smallest_cent_diff = ARBITRARILY_HIGH_DIFF
+
+    notes.each do |note|
+      diff = NoteDiff.new note, target
+
+      if diff.cents < smallest_cent_diff
+        nearest        = note
+
+        smallest_cent_diff = diff.cents
+      end
+
+   end
+
+    nearest
+  end
+
   def note midi
     notes_by_midi_number.find{|n| n.midi_number == midi }
   end
@@ -45,12 +66,20 @@ class Key
     @notes_by_name = {}
     @notes_by_midi_number = SortedSet.new
 
-    each_note do |octave, note_name, cents, midi_number|
-      note = Note.new name: note_name, midi_number: midi_number, cents: cents
 
-      @notes_by_name["#{note_name}#{octave}"] = note
+    notes.each do |note|
+      @notes_by_name[note.note] = note
       @notes_by_midi_number << note
     end
+  end
+
+  def notes
+    notes = []
+    each_note do |octave, note_name, cents, midi_number|
+      note = Note.new name: note_name, midi_number: midi_number, cents: cents
+      notes << note
+    end
+    notes
   end
 
   def check_args

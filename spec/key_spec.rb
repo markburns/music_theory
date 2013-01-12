@@ -22,13 +22,34 @@ describe Key do
     end
 
     context "with just intonation" do
-      let(:key) { Key.new key: "C", scale: SevenNoteScale, tuning: JustIntonation }
+      let(:key) { Key.new scale: SevenNoteScale, tuning: JustIntonation }
       specify do
         notes = key.notes_by_name
         notes["A4"].midi_number.should == 69
         notes["A4"].cents.should == -16
         notes["B4"].cents.should == -12
         notes["C10"].cents.should == 0
+      end
+    end
+  end
+
+  describe "#nearest_notes" do
+    let(:key) { Key.new scale: SevenNoteScale, tuning: JustIntonation }
+    context "with closer A" do
+      let(:a) { Note.new name: "A", midi_number: 69, cents: -16 }
+
+      specify do
+        key.nearest_note(440).should == a
+      end
+    end
+
+    context "with closer G#" do
+      let(:key) { Key.new  }
+      let(:a)       { Note.new name: "A",  midi_number: 69  }
+      let(:g_sharp) { Note.new name: "G#", midi_number: 68 }
+
+      specify do
+        key.nearest_note(429).should == g_sharp
       end
     end
   end

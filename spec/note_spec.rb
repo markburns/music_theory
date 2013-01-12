@@ -39,4 +39,21 @@ describe 'Note' do
     end
   end
 
+  describe "diff" do
+    let(:c) { Note.new name: "C", midi_number: 60 }
+    let(:d) { Note.new name: "D", midi_number: 61 }
+
+    specify do
+      c.diff(d).should be_a NoteDiff
+    end
+  end
+
+  describe "#from" do
+    let(:middle_a) { Note.new midi_number: 69 }
+    specify do
+      Note.from(440).should == middle_a
+      Note.from(441).should =~ middle_a
+    end
+  end
+
 end
