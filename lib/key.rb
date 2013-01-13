@@ -7,6 +7,30 @@ class Key
   DEFAULT_RANGE       = 0..140
   DEFAULT_KEY         = "C"
 
+  TRANSPOSITION = {
+    "Cb"  => -1,
+    "C"  => 0,
+    "C#" => 1,
+    "Db" => 1,
+    "D"  => 2,
+    "D#" => 3,
+    "Eb" => 3,
+    "E"  => 4,
+    "Fb" => 4,
+    "E#" => 5,
+    "F"  => 5,
+    "F#" => 6,
+    "Gb" => 6,
+    "G"  => 7,
+    "G#" => 8 ,
+    "Ab" => 8,
+    "A"  => 9,
+    "A#" => 10,
+    "Bb" => 10,
+    "B"  => 11,
+    "B#" => 12
+  }
+
   def initialize options={}
     @key, @scale_klass, @range, @tuning =
       options[:key]    || DEFAULT_KEY,
@@ -14,6 +38,7 @@ class Key
       options[:range]  || DEFAULT_RANGE,
       options[:tuning] || DEFAULT_TUNING
 
+    @transpose_offset = TRANSPOSITION[@key]
     check_args
 
     calculate_notes
@@ -73,7 +98,7 @@ class Key
     octaves.map do |octave|
       scale.octave.each do |index, note_and_cents|
         cents = note_and_cents[:cents]
-        midi_number = ((octave+1) * 12) + index
+        midi_number = ((octave+1) * 12) + index + @transpose_offset
 
         yield midi_number, cents if range.include? midi_number
       end

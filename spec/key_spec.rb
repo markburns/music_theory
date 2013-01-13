@@ -71,6 +71,17 @@ describe Key do
     end
   end
 
+  context "transposing to different keys" do
+    let(:key) { Key.new scale: SevenNoteScale, range: 60..75, key: "C#" }
+    specify do
+      [61,63,65,66,68,70,72,73].each do |n|
+        key.note(n).should_not be_nil
+      end
+      [59,62,64,67,69,71,74].each do |n|
+        key.note(n).should be_nil
+      end
+    end
+  end
 
   describe "#notes_by_midi_number" do
     specify do

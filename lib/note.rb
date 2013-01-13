@@ -70,7 +70,7 @@ class Note
   end
 
   def attributes
-    "frequency: #{frequency.round(2)}Hz"
+    "midi: #{midi_number} frequency: #{frequency.round(2)}Hz"
   end
 
   def format h
@@ -82,7 +82,7 @@ class Note
   end
 
   def to_s
-    "<Note #{attributes}>"
+    "<Note #{name} #{attributes}>"
   end
 
   def <=> other
