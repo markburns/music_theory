@@ -3,7 +3,7 @@ require File.expand_path('spec/spec_helper')
 describe Chord do
   let(:key) { Key.new }
   let(:chord) { Chord.new key, "A4", "C#4", "E4" }
-  let(:note_factory) { NoteFactory.new }
+  let(:note_factory) { NoteFactory }
 
   specify do
     chord.length.should == 3
@@ -22,8 +22,8 @@ describe Chord do
 
     let(:key) { Key.new(key: "A", tuning: JustIntonation) }
     specify do
-      pending
-      chord[1].should =~ note_factory.from("Db4")
+      note = chord[1]
+      note.should =~ key.note("Db4")
     end
 
     specify do
@@ -39,7 +39,7 @@ describe Chord do
       it "adjusts harmonics to the relevant tuning" do
         harmonics = chord.harmonics(in_key: true)
 
-	pending
+        pending
         harmonics["C4"].should == ["C5", "G5", "C6", "E6 +0.3", "G6", "Bb6 -31.2", "C7"]
         harmonics["E4"].should == ["E5"]
         harmonics["G4"].should == ["G5"]

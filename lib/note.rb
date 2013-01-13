@@ -1,5 +1,5 @@
 class Note
-  attr_reader :midi_number, :cents, :name, :decorator
+  attr_reader :tuning, :midi_number, :cents, :name, :decorator
 
   FREQUENCY_OF_MIDDLE_A = 440.0
   NOTES_PER_OCTAVE      = 12.0
@@ -11,6 +11,7 @@ class Note
 
   def initialize options
     @midi_number = options[:midi_number]
+    @tuning      = options[:tuning]
     @cents       = options[:cents] || 0.0
     @decorator   = NoteDecorator.new self
     @name        = @decorator.calculate_name(options[:name])
@@ -18,7 +19,7 @@ class Note
 
   def harmonics
     @harmonics ||= (2..8).map do |c|
-      NoteFactory.new.from(frequency * c, Harmonic)
+      NoteFactory.from(frequency * c, Harmonic)
     end.unshift nil
   end
 

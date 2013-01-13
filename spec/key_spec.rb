@@ -3,7 +3,7 @@ require File.expand_path('spec/spec_helper')
 
 describe Key do
   let(:key) { Key.new }
-  let(:note_factory) { NoteFactory.new }
+  let(:note_factory) { NoteFactory }
 
   describe "#notes_by_name" do
      {

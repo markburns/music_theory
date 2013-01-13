@@ -3,7 +3,7 @@ require './lib/note'
 require 'active_support/core_ext/numeric'
 
 describe 'Note' do
-  let(:note_factory) { NoteFactory.new }
+  let(:note_factory) { NoteFactory }
 
   context "with different midi number" do
     {

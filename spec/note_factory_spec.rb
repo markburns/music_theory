@@ -1,7 +1,7 @@
 require File.expand_path('spec/spec_helper')
 
 describe NoteFactory do
-  let(:note_factory) { NoteFactory.new }
+  let(:note_factory) { NoteFactory }
 
   describe ".from" do
     let(:middle_a) { Note.new midi_number: 69 }
@@ -23,5 +23,6 @@ describe NoteFactory do
     let(:note) { note_factory.in_tuning(key, 440) }
 
     specify { note.should be_a Note }
+    specify { note.tuning.should == JustIntonation }
   end
 end

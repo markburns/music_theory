@@ -1,22 +1,24 @@
-class NoteFactory
+module NoteFactory
+  extend self
+
   def from frequency_or_name, klass=Note
     midi_number, cents = to_midi_number_and_cents(frequency_or_name)
-   klass.new midi_number: midi_number, cents: cents
+    klass.new midi_number: midi_number, cents: cents
   end
 
   def to_midi_number_and_cents frequency_or_name
-    method_name = frequency_or_name.is_a?(Numeric) ? :midi_number_and_cents_from : :parse
+    method_name = frequency_or_name.is_a?(Numeric) ? :parse_frequency : :parse_midi
 
     send(method_name, frequency_or_name)
   end
 
   def in_tuning key, frequency_or_name
-    midi_number, cents = to_midi_number_and_cents(frequency_or_name)
+    midi_number, _ = to_midi_number_and_cents(frequency_or_name)
 
-    Note.new midi_number: midi_number, cents: cents
+    key.note midi_number
   end
 
-  def midi_number_and_cents_from frequency
+  def parse_frequency frequency
     value = Note::MIDDLE_A_MIDI +
       Note::NOTES_PER_OCTAVE *
       Math.log((frequency / Note::FREQUENCY_OF_MIDDLE_A), 2)
@@ -30,11 +32,12 @@ class NoteFactory
   FULL_REGEX_STRING = [
     NOTE_REGEX_STRING,
     OCTAVE_REGEX_STRING,
-    CENT_REGEX_STRING].join ""
+    CENT_REGEX_STRING
+  ].join ""
 
   NOTE_OCTAVE_CENT_REGEX = /\A#{FULL_REGEX_STRING}\z/
 
-  def parse name
+  def parse_midi name
     unless name =~ NOTE_OCTAVE_CENT_REGEX
       raise ArgumentError, "Unrecognized note name #{name}"
     end
@@ -49,5 +52,4 @@ class NoteFactory
 
     return midi_number, cents
   end
-
 end
