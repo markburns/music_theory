@@ -3,6 +3,8 @@ require './lib/note'
 require 'active_support/core_ext/numeric'
 
 describe 'Note' do
+  let(:note_factory) { NoteFactory.new }
+
   context "with different midi number" do
     {
       [140, 0.0 ]  => 26_579.50,
@@ -49,31 +51,28 @@ describe 'Note' do
     end
   end
 
-  describe ".from" do
-    let(:middle_a) { Note.new midi_number: 69 }
-    let(:c_sharp) { Note.new name: "C#", midi_number: 97, cents: -14 }
-
-    specify do
-      Note.from(440).should == middle_a
-      Note.from(440).name == "A4"
-      Note.from(441).should =~ middle_a
-      debugger
-      Note.from(440*5).should =~ c_sharp
-    end
-  end
-
   describe "#harmonics" do
     let(:middle_a) { Note.new midi_number: 69 }
-    specify do
-      middle_a.harmonics[1].name.should == "A5"
-      middle_a.harmonics[2].name.should == "E6 +2.0"
-      middle_a.harmonics[3].name.should == "A6"
+
+    def harmonic_name_should_equal number, name
+      should_equal_ignoring_whitespace middle_a.harmonics[number].name, name
     end
 
-    (1..9).to_a.each do |h|
+    def should_equal_ignoring_whitespace a,b
+      a.gsub(/\s+/,'').should == b.gsub(/\s+/,'')
+    end
 
+    specify do
+      harmonic_name_should_equal 1, "A5"
+      harmonic_name_should_equal 2, "E6 +2.0"
+      harmonic_name_should_equal 3, "A6"
+
+      should_equal_ignoring_whitespace note_factory.from(233).name, "Bb3 -0.6"
+    end
+
+    (2..8).to_a.each do |h|
       specify "has the #{h}th harmonic" do
-        middle_a.harmonics[h].should == Note.from(440 * (h+1))
+        middle_a.harmonics[h - 1].should == note_factory.from(440 * h)
       end
     end
   end

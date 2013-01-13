@@ -1,0 +1,2 @@
+class Harmonic < Note
+end

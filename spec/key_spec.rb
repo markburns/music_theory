@@ -3,6 +3,7 @@ require File.expand_path('spec/spec_helper')
 
 describe Key do
   let(:key) { Key.new }
+  let(:note_factory) { NoteFactory.new }
 
   describe "#notes_by_name" do
      {
@@ -60,7 +61,7 @@ describe Key do
       end
     end
 
-    let(:middle_a) { Note.from 440 }
+    let(:middle_a) { note_factory.from 440 }
 
     let(:key) { Key.new range: 68..75 }
     specify do

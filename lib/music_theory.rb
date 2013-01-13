@@ -13,6 +13,9 @@ require './lib/key'
 require './lib/key_printer'
 
 require './lib/note'
+require './lib/note_factory'
+require './lib/note_decorator'
 require './lib/note_diff'
+require './lib/harmonic'
 
-
+require './lib/chord'

@@ -67,7 +67,7 @@ class Key
   ARBITRARILY_HIGH_DIFF = 400_000
 
   def nearest_note frequency
-    target             = Note.from frequency
+    target             = NoteFactory.new.from frequency
     nearest            = nil
     smallest_cent_diff = ARBITRARILY_HIGH_DIFF
 
@@ -84,7 +84,14 @@ class Key
     nearest
   end
 
-  def note midi
+  def note note
+    midi  =
+      if note.is_a? Numeric
+        note
+      else
+        NoteFactory.new.parse(note).first
+      end
+
     notes_by_midi_number.find{|n| n.midi_number == midi }
   end
 

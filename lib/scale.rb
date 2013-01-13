@@ -30,8 +30,7 @@ module Scale
     note = @output[scale_offset] ||= {}
 
     note[:notes] ||= []
-    note[:notes] += names
-    note[:notes].uniq!
+    note[:notes] |= names
     note[:cents] = cents
   end
 end
