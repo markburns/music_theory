@@ -26,7 +26,7 @@ class KeyPrinter
     range.to_a.each do |midi|
       note = key.note midi
       if note
-        columns = [ midi, note.note, standard_frequency(midi), note.cents, note.frequency.round(2)]
+        columns = [ midi, note.name_without_cents, standard_frequency(midi), note.cents, note.frequency.round(2)]
         output << format(columns)
       end
     end

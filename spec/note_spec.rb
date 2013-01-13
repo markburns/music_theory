@@ -49,18 +49,29 @@ describe 'Note' do
     end
   end
 
-  describe "#from" do
+  describe ".from" do
     let(:middle_a) { Note.new midi_number: 69 }
+    let(:c_sharp) { Note.new name: "C#", midi_number: 97, cents: -14 }
+
     specify do
       Note.from(440).should == middle_a
+      Note.from(440).name == "A4"
       Note.from(441).should =~ middle_a
+      debugger
+      Note.from(440*5).should =~ c_sharp
     end
   end
 
   describe "#harmonics" do
     let(:middle_a) { Note.new midi_number: 69 }
+    specify do
+      middle_a.harmonics[1].name.should == "A5"
+      middle_a.harmonics[2].name.should == "E6 +2.0"
+      middle_a.harmonics[3].name.should == "A6"
+    end
 
     (1..9).to_a.each do |h|
+
       specify "has the #{h}th harmonic" do
         middle_a.harmonics[h].should == Note.from(440 * (h+1))
       end

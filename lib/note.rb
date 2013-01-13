@@ -1,10 +1,11 @@
 class Note
-  attr_reader :name, :midi_number, :cents
+  attr_reader :midi_number, :cents, :name
 
   FREQUENCY_OF_MIDDLE_A = 440.0
   NOTES_PER_OCTAVE      = 12.0
   MIDDLE_A_MIDI         = 69
 
+  OCTAVE = %w(C Db D Eb E F Gb G Ab A Bb B)
 
   class << self
     def from frequency
@@ -16,14 +17,43 @@ class Note
       value = MIDDLE_A_MIDI +
         NOTES_PER_OCTAVE *
         Math.log((frequency / FREQUENCY_OF_MIDDLE_A), 2)
-      [value.floor, value - value.floor]
+      [value.floor, 100.0 * (value - value.floor)]
     end
   end
 
   def initialize options
-    @name        = options[:name]
     @midi_number = options[:midi_number]
     @cents       = options[:cents] || 0.0
+    @name        = calculate_name options[:name]
+  end
+
+  def calculate_name name_override
+    [(name_override  || note_name), octave, display_cents].join ""
+  end
+
+  def display_cents
+    value = cents.round 1
+
+    if value > 0
+      " +#{value}"
+    elsif value == 0
+      ""
+    else
+      " #{value}"
+    end
+  end
+
+  def name_without_cents
+    [note_name, octave].join ""
+  end
+
+
+  def note_name
+    OCTAVE[midi_number % NOTES_PER_OCTAVE]
+  end
+
+  def octave
+    midi_number / NOTES_PER_OCTAVE
   end
 
   def harmonics
@@ -40,7 +70,11 @@ class Note
   end
 
   def attributes
-    {frequency: frequency, name: name, midi_number: midi_number, cents: cents}
+    "frequency: #{frequency.round(2)}Hz"
+  end
+
+  def format h
+    h.inject(""){|r,(k,v)| "#{r}, #{k}: #{v}" }
   end
 
   def diff other
@@ -49,10 +83,6 @@ class Note
 
   def to_s
     "<Note #{attributes}>"
-  end
-
-  def note
-    [name, octave].join ""
   end
 
   def <=> other
@@ -64,6 +94,6 @@ class Note
   end
 
   def =~ other
-    diff(other).cents < 0.5
+    diff(other).cents < 5
   end
 end

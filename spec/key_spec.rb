@@ -5,17 +5,17 @@ describe Key do
   let(:key) { Key.new }
 
   describe "#notes_by_name" do
-    specify do
-      notes = key.notes_by_name
-      {
+     {
         "A4"  => 69,
         "A0"  => 21,
         "C0"  => 12,
         "Bb0" => 22,
-        "A#0" => 22,
         "B0"  => 23,
         "C1"  => 24
       }.each do |n, midi|
+        specify "#{n} maps to #{midi}" do
+          notes = key.notes_by_name
+
         notes[n].midi_number.should == midi
       end
 
@@ -34,25 +34,43 @@ describe Key do
   end
 
   describe "#nearest_notes" do
-    let(:key) { Key.new scale: SevenNoteScale, tuning: JustIntonation }
     context "with closer A" do
-      let(:a) { Note.new name: "A", midi_number: 69, cents: -16 }
+      let(:key) { Key.new range: 68..72, scale: SevenNoteScale, tuning: JustIntonation }
+      let(:a_with_offset) { Note.new name: "A", midi_number: 69, cents: -16 }
 
       specify do
-        key.nearest_note(440).should == a
+        key.nearest_note(440).should =~ a_with_offset
       end
     end
 
     context "with closer G#" do
-      let(:key) { Key.new  }
-      let(:a)       { Note.new name: "A",  midi_number: 69  }
-      let(:g_sharp) { Note.new name: "G#", midi_number: 68 }
+      module TempIntonation
+        def cent_offsets
+          #Ab is +92 cents, A is +17 cents
+          {8 => 92, 9 => 17}
+        end
+      end
+      let(:key) { Key.new range: 68..70, tuning: TempIntonation }
+      let(:a_flat_with_tuning) { Note.new midi_number: 68, cents: 92, name: "Ab#" }
+      let(:middle_a)           { Note.new midi_number: 69                         }
+      let(:a_with_tuning)      { Note.new midi_number: 69, cents: 17              }
 
       specify do
-        key.nearest_note(429).should == g_sharp
+        key.nearest_note(440).should =~ a_flat_with_tuning
       end
     end
+
+    let(:middle_a) { Note.from 440 }
+
+    let(:key) { Key.new range: 68..75 }
+    specify do
+      expected = Note.new midi_number: 97
+
+      nearest = key.nearest_note(440 * 5)
+      nearest.should ==  expected
+    end
   end
+
 
   describe "#notes_by_midi_number" do
     specify do

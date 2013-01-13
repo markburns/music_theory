@@ -9,29 +9,29 @@ module Scale
     self.extend tuning
   end
 
-  def each
-    notes.each {|n| yield n }
+  def note_cent_intersection
+    notes.keys & cent_offsets.keys
   end
 
   def octave
     @output = {}
-    notes.each do |scale_offset, names|
-      cent_offsets.each do |tuning_offset, cents|
-        set_octave scale_offset, names, tuning_offset, cents
-      end
+
+    note_cent_intersection.each do |scale_offset|
+      names = notes[scale_offset]
+      cents = cent_offsets[scale_offset]
+
+      set_octave scale_offset, names, cents
     end
 
     @output
   end
 
-  def set_octave scale_offset, names, tuning_offset, cents
+  def set_octave scale_offset, names, cents
     note = @output[scale_offset] ||= {}
 
     note[:notes] ||= []
     note[:notes] += names
     note[:notes].uniq!
-
-    note = @output[tuning_offset] ||= {}
     note[:cents] = cents
   end
 end

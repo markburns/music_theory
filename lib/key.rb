@@ -1,15 +1,17 @@
 class Key
-  attr_reader :scale, :key, :scale_klass, :tuning, :notes_by_name,
+  attr_reader :scale, :key, :scale_klass, :tuning, :range, :notes_by_name,
     :notes_by_midi_number
 
   DEFAULT_TUNING      = EvenTuning
   DEFAULT_SCALE_KLASS = TwelveNoteScale
+  DEFAULT_RANGE       = 0..140
   DEFAULT_KEY         = "C"
 
   def initialize options={}
-    @key, @scale_klass, @tuning =
+    @key, @scale_klass, @range, @tuning =
       options[:key]    || DEFAULT_KEY,
       options[:scale]  || DEFAULT_SCALE_KLASS,
+      options[:range]  || DEFAULT_RANGE,
       options[:tuning] || DEFAULT_TUNING
 
     check_args
@@ -17,22 +19,41 @@ class Key
     calculate_notes
   end
 
+  def inspect
+    "<Key '#{@key}' #{@scale_klass} #{@tuning} \n#{nice_octave}\n    >"
+  end
+
+  def nice_octave
+    nice = scale.octave.values.inject({}){|r, v|
+      values = v.values.flatten
+      values.last.is_a?(String) ? values.reverse! : values
+      r[values.first] = values.last
+      r
+
+    }
+
+    output = []
+    nice.each do |k,v|
+      output << "      #{k.ljust(3)}: #{v}"
+    end
+    output.join "\n"
+  end
+
   ARBITRARILY_HIGH_DIFF = 400_000
 
   def nearest_note frequency
-    target = Note.from frequency
-    nearest       =    nil
+    target             = Note.from frequency
+    nearest            = nil
     smallest_cent_diff = ARBITRARILY_HIGH_DIFF
 
-    notes.each do |note|
+    notes.each.with_index do |note, next_note_index|
       diff = NoteDiff.new note, target
 
-      if diff.cents < smallest_cent_diff
-        nearest        = note
+      if diff.cents.abs < smallest_cent_diff.abs
+        nearest = note
 
         smallest_cent_diff = diff.cents
       end
-
    end
 
     nearest
@@ -48,14 +69,13 @@ class Key
 
   def each_note range=nil
     range ||= 0..140
+
     octaves.map do |octave|
       scale.octave.each do |index, note_and_cents|
-        note_names, cents = note_and_cents[:notes], note_and_cents[:cents]
+        cents = note_and_cents[:cents]
         midi_number = ((octave+1) * 12) + index
 
-        note_names.each do |name|
-          yield octave, name, cents, midi_number
-        end if range.include? midi_number
+        yield midi_number, cents if range.include? midi_number
       end
     end
   end
@@ -68,15 +88,15 @@ class Key
 
 
     notes.each do |note|
-      @notes_by_name[note.note] = note
+      @notes_by_name[note.name_without_cents] = note
       @notes_by_midi_number << note
     end
   end
 
   def notes
     notes = []
-    each_note do |octave, note_name, cents, midi_number|
-      note = Note.new name: note_name, midi_number: midi_number, cents: cents
+    each_note do |midi_number, cents|
+      note = Note.new midi_number: midi_number, cents: cents
       notes << note
     end
     notes
