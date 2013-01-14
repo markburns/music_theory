@@ -84,13 +84,21 @@ class Key
     nearest
   end
 
-  def note midi_number
-    m = midi_number.is_a?(String) ? NoteFactory.parse_midi(midi_number).first : midi_number
-    notes_by_midi_number.find{|n| n.midi_number == m }
+  def note midi_number, cents=0.0, klass=nil
+    m, _ =
+      if midi_number.is_a?(String)
+        NoteFactory.parse_midi(midi_number)
+      else
+        [midi_number, cents]
+      end
+
+    note = notes_by_midi_number.find{|n| n.midi_number == m }
+
+    note.new_with cents: cents
   end
 
   def scale
-    scale_klass.new.tap{|s| s.extend tuning}
+    @scale ||= scale_klass.new.tap{|s| s.extend tuning}
   end
 
   def each_note range=nil
@@ -112,7 +120,6 @@ class Key
     @notes_by_name = {}
     @notes_by_midi_number = SortedSet.new
 
-
     notes.each do |note|
       @notes_by_name[note.name_without_cents] = note
       @notes_by_midi_number << note
@@ -120,11 +127,16 @@ class Key
   end
 
   def notes
+    @notes ||= create_notes
+  end
+
+  def create_notes
     notes = []
     each_note do |midi_number, cents|
-      note = Note.new midi_number: midi_number, cents: cents, key: self, tuning: tuning
+      note = Note.new midi_number: midi_number, cents: cents, key: self
       notes << note
     end
+
     notes
   end
 

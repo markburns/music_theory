@@ -1,20 +1,26 @@
 class NoteDiff
-  attr_reader :lower, :higher
+  attr_reader :a, :b
 
   def initialize a,b
-    @lower, @higher = [a,b].sort
+    @a, @b = [a,b]
+  end
+
+  def to_s
+    "<NoteDiff: (#{@a.name})->(#{@b.name}) #{frequency.round 2}Hz  #{cents.round 2}cents >"
   end
 
   def frequency
-    @higher.frequency - @lower.frequency
+    @b.frequency - @a.frequency
   end
 
   def cents
-    ((@higher.midi_number + @higher.cents / 100.0) -
-    (@lower. midi_number + @lower.cents / 100.0)) * 100.0
+    diff = (((@b. midi_number + @b.cents / 100.0)) -
+     (@a.midi_number + @a.cents / 100.0)) * 100.0
+
+    diff.round 2
   end
 
   def midi_note
-    (@higher.midi_number - @lower.midi_number)
+    (@b.midi_number - @a.midi_number)
   end
 end

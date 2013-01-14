@@ -37,7 +37,7 @@ describe Key do
   describe "#nearest_notes" do
     context "with closer A" do
       let(:key) { Key.new range: 68..72, scale: SevenNoteScale, tuning: JustIntonation }
-      let(:a_with_offset) { Note.new name: "A", midi_number: 69, cents: -16 }
+      let(:a_with_offset) { Note.new key: key, name: "A", midi_number: 69, cents: -16 }
 
       specify do
         key.nearest_note(440).should =~ a_with_offset
@@ -52,9 +52,9 @@ describe Key do
         end
       end
       let(:key) { Key.new range: 68..70, tuning: TempIntonation }
-      let(:a_flat_with_tuning) { Note.new midi_number: 68, cents: 92, name: "Ab#" }
-      let(:middle_a)           { Note.new midi_number: 69                         }
-      let(:a_with_tuning)      { Note.new midi_number: 69, cents: 17              }
+      let(:a_flat_with_tuning) { Note.new key: key, midi_number: 68, cents: 92, name: "Ab#" }
+      let(:middle_a)           { Note.new key: key, midi_number: 69                         }
+      let(:a_with_tuning)      { Note.new key: key, midi_number: 69, cents: 17              }
 
       specify do
         key.nearest_note(440).should =~ a_flat_with_tuning
@@ -65,7 +65,7 @@ describe Key do
 
     let(:key) { Key.new range: 68..75 }
     specify do
-      expected = Note.new midi_number: 97
+      expected = Note.new key: key, midi_number: 97
 
       nearest = key.nearest_note(440 * 5)
       nearest.should ==  expected
@@ -99,6 +99,11 @@ describe Key do
       n.should be_a Note
 
       notes.find{|note| note.midi_number == 69 }.should == n
+
+      offset_note = key.note(69, 15)
+
+      offset_note.midi_number.should == 69
+      offset_note.cents.should == 15
     end
   end
 end

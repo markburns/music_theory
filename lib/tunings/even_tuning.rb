@@ -15,4 +15,6 @@ module EvenTuning
       11   => 0.0
     }
   end
+
+  extend self
 end

@@ -1,33 +1,34 @@
 class NoteDecorator
   attr_reader :note
 
-  delegate :name, :midi_number, :octave, :frequency, :cents, to: :note
+  delegate :note_name, :name, :midi_number, :octave, :frequency, :cents, :key, to: :note
 
   def initialize note
     @note = note
   end
 
   def attributes
-    "midi: #{midi_number.to_s.ljust 3} | frequency: #{frequency.round(2)}Hz"
+    "midi: #{midi_number.to_s.ljust 3} #{frequency.round(2)}Hz"
   end
 
   def to_s
-    "<#{note.class.name} #{name.rjust 10} #{attributes}>"
+    name = "\"#{self.name}\"".rjust 10
+    "<#{note.class.name} #{name} #{attributes}>"
   end
 
-  def calculate_name override
-    [(override  || note_name), octave, display_cents].join("")
+  def tuning
+    key ? key.tuning : ''
   end
 
   def display_cents
     value = cents.round 1
 
     if value > 0
-      " +#{value}"
+      " +#{value}c"
     elsif value == 0
       ""
     else
-      " #{value}"
+      " #{value}c"
     end
   end
 
@@ -35,8 +36,12 @@ class NoteDecorator
     [note_name, octave].join ""
   end
 
-  def note_name
-    Note::OCTAVE[midi_number % Note::NOTES_PER_OCTAVE]
+  def name
+    [note_name, octave, display_cents].join("")
+  end
+
+  def calculate_note_name override
+    override || Note::OCTAVE[midi_number % Note::NOTES_PER_OCTAVE]
   end
 end
 

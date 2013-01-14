@@ -1,8 +1,9 @@
 require File.expand_path('spec/spec_helper')
 
 describe NoteDiff do
-  let(:c) { Note.new name: "C", midi_number: 60 }
-  let(:d) { Note.new name: "D", midi_number: 62 }
+  let(:key) { Key.new }
+  let(:c) { Note.new key: key, name: "C", midi_number: 60 }
+  let(:d) { Note.new key: key, name: "D", midi_number: 62 }
   let(:note_diff) { NoteDiff.new c, d }
 
   specify do
@@ -16,8 +17,8 @@ describe NoteDiff do
   end
 
   specify do
-    c = Note.new name: "C",  midi_number: 60, cents: 17
-    d = Note.new name: "Db", midi_number: 61, cents: -2
+    c = Note.new key: key, name: "C",  midi_number: 60, cents: 17
+    d = Note.new key: key, name: "Db", midi_number: 61, cents: -2
 
     NoteDiff.new(c, d).cents.round.should == (100 - 17 - 2)
   end

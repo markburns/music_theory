@@ -1,12 +1,13 @@
 require File.expand_path('spec/spec_helper')
 
 describe NoteFactory do
-  let(:note_factory) { NoteFactory }
+  let(:note_factory) { NoteFactory.new key }
+  let(:key) { Key.new }
 
   describe ".from" do
-    let(:middle_a) { Note.new midi_number: 69 }
-    let(:a_sharp) { Note.new midi_number: 58 }
-    let(:c_sharp) { Note.new name: "C#", midi_number: 97, cents: -14 }
+    let(:middle_a){ Note.new key: key, midi_number: 69 }
+    let(:a_sharp) { Note.new key: key, midi_number: 58 }
+    let(:c_sharp) { Note.new key: key, name: "C#", midi_number: 97, cents: -14 }
 
 
     specify do
@@ -20,9 +21,11 @@ describe NoteFactory do
 
   describe "#in_tuning" do
     let(:key) { Key.new tuning: JustIntonation }
-    let(:note) { note_factory.in_tuning(key, 440) }
+
+    let(:note) { note_factory.in_tuning(440) }
 
     specify { note.should be_a Note }
-    specify { note.tuning.should == JustIntonation }
+    specify { note.key.should == key }
+    specify { note.cents.should == -16 }
   end
 end
