@@ -1,10 +1,11 @@
 require File.expand_path('spec/spec_helper')
 
 describe KeyPrinter do
-  let(:key) { Key.new scale: SevenNoteScale, tuning: JustIntonation }
+  let(:key) { Key.new tuning: JustIntonation }
   let(:key_printer) { KeyPrinter.new key }
 
   def check range, expected
+    debugger
     key_printer.print(range).split("\n").each_with_index do |output_line, index|
       output_line.gsub(/\s*/,"").should == expected.split("\n")[index].gsub(/\s*/, "")
     end

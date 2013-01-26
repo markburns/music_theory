@@ -13,14 +13,11 @@ class NoteDiff
     @b.frequency - @a.frequency
   end
 
-  def cents
-    diff = (((@b. midi_number + @b.cents / 100.0)) -
-     (@a.midi_number + @a.cents / 100.0)) * 100.0
-
-    diff.round 2
+  def midi_number
+    (@b. midi_number - @a.midi_number).round 2
   end
 
-  def midi_note
-    (@b.midi_number - @a.midi_number)
+  def cents
+    midi_number * 100.0
   end
 end

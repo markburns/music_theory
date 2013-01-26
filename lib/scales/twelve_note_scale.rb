@@ -1,7 +1,5 @@
-class TwelveNoteScale
-  include Scale
-
-  def notes
+module TwelveNoteScale
+  def self.notes
     {
       0    => %w(C     ),
       1    => %w(C# Db ),

@@ -8,7 +8,7 @@ class NoteDecorator
   end
 
   def attributes
-    "midi: #{midi_number.to_s.ljust 3} #{frequency.round(2)}Hz"
+    "midi: #{midi_number.round(2).to_s.rjust 6} #{frequency.round(2).to_s.ljust(6)}Hz"
   end
 
   def to_s
@@ -21,7 +21,7 @@ class NoteDecorator
   end
 
   def display_cents
-    value = cents.round 1
+    value = (cents * 100).round(1)
 
     if value > 0
       " +#{value}c"
@@ -30,10 +30,6 @@ class NoteDecorator
     else
       " #{value}c"
     end
-  end
-
-  def name_without_cents
-    [note_name, octave].join ""
   end
 
   def name

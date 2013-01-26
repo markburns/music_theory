@@ -1,14 +1,14 @@
 require File.expand_path('spec/spec_helper')
 
 describe NoteDiff do
-  let(:key) { Key.new }
-  let(:c) { Note.new key: key, name: "C", midi_number: 60 }
-  let(:d) { Note.new key: key, name: "D", midi_number: 62 }
+  let(:tuning) { EvenTuning }
+  let(:c) { Note.new tuning: tuning, name: "C", midi_number: 60 }
+  let(:d) { Note.new tuning: tuning, name: "D", midi_number: 62 }
   let(:note_diff) { NoteDiff.new c, d }
 
   specify do
-    note_diff.lower. should == c
-    note_diff.higher.should == d
+    note_diff.a.should == c
+    note_diff.b.should == d
 
     c_freq = 261.625565300599
     d_freq = 293.664767917408
@@ -17,10 +17,11 @@ describe NoteDiff do
   end
 
   specify do
-    c = Note.new key: key, name: "C",  midi_number: 60, cents: 17
-    d = Note.new key: key, name: "Db", midi_number: 61, cents: -2
+    debugger
+    c = Note.new tuning: tuning, name: "C",  midi_number: 60, cents: 17
+    d = Note.new tuning: tuning, name: "Db", midi_number: 61, cents: -2
 
-    NoteDiff.new(c, d).cents.round.should == (100 - 17 - 2)
+    NoteDiff.new(c, d).cents.should == (100 - 17 - 2)
   end
 
 
