@@ -1,5 +1,5 @@
 module Major
-  def self.notes
+  def notes
     {
       1  => %w(C),
       2  => %w(D),
