@@ -1,4 +1,11 @@
 module Minor
+  def self.included base
+    base.class_eval do
+      include Scale
+    end
+  end
+
+
   def self.notes
     {
       1  => %w(A),

@@ -1,4 +1,10 @@
 module TwelveNoteScale
+  def self.included base
+    base.class_eval do
+      include Scale
+    end
+  end
+
   def notes
     {
       0    => %w(C     ),
