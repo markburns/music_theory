@@ -17,7 +17,6 @@ describe NoteDiff do
   end
 
   specify do
-    debugger
     c = Note.new tuning: tuning, name: "C",  midi_number: 60, cents: 17
     d = Note.new tuning: tuning, name: "Db", midi_number: 61, cents: -2
 

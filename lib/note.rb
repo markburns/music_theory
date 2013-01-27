@@ -61,7 +61,6 @@ class Note
 
   def frequency
     adjusted_cents = tuning.cent_offsets[note_offset]
-    debugger unless adjusted_cents
     MidiFrequencyConverter.to_frequency midi_number + adjusted_cents / 100.0
   end
 
