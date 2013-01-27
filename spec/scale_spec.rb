@@ -32,6 +32,7 @@ describe Major do
     instance.octave("C" ).should == %w(C D E F G A B)
     instance.octave("Eb").should == %w(Eb F G Ab Bb C D)
     instance.octave("Gb").should == %w(Gb Ab Bb Cb Db Eb F)
+    instance.octave("F#").should == %w(F# G# A# B C# D# E#)
     instance.octave("C#").should == %w(C# D# E# F# G# A# B#)
     instance.octave("E" ).should == %w(E F# G# A B C# D#)
     instance.octave("B" ).should == %w(B C# D# E F# G# A#)
