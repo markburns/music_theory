@@ -2,11 +2,11 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.SourceDataLine;
 
-class Sound
+class Sine
   SAMPLE_RATE = 44100;
 
   def audio_format
-    @audio_format ||= AudioFormat.new(Sound::SAMPLE_RATE, 16, 1, true, true);
+    @audio_format ||= AudioFormat.new(Sine::SAMPLE_RATE, 16, 1, true, true);
   end
 
   def line
@@ -14,7 +14,7 @@ class Sound
   end
 
   def play frequency, duration
-    bytes = generate_sine_wave frequency, duration
+    bytes = generate frequency, duration
 
     length = SAMPLE_RATE * bytes.length / 1000;
 
@@ -32,7 +32,7 @@ class Sound
     line.close
   end
 
-  def generate_sine_wave(frequency, seconds)
+  def generate(frequency, seconds)
     sampling_interval = (SAMPLE_RATE / frequency).to_f
 
     (seconds * SAMPLE_RATE).to_i.times.map do |i|
@@ -51,10 +51,9 @@ class Sound
 end
 
 
-sound = Sound.new
+sine = Sine.new
 
-sound.sequence 220,330,440,550,660,770,110,550
-sound.sequence 220,330,440,550,660,770,110,550
-
-sound.sequence 220,330,440,550,660,770,110,550
-sound.sequence 220,330,440,550,660,770,110,550
+sine.sequence 220,330,440,550,660,770,110,550
+sine.sequence 220,330,440,550,660,770,110,550
+sine.sequence 220,330,440,550,660,770,110,550
+sine.sequence 220,330,440,550,660,770,110,550
